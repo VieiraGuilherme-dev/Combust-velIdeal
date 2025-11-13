@@ -14,15 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView txtResultado;
-    EditText edtGasolina;
-    EditText edtEtanol;
-    Button btnCalcular;
-    Button btnLimpar;
-
-    double precoGasolina;
-    double precoEtanol;
-    double resultado;
+    private TextView txtResultado;
+    private EditText edtGasolina;
+    private EditText edtEtanol;
+    private Button btnCalcular;
+    private Button btnLimpar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,36 +38,34 @@ public class MainActivity extends AppCompatActivity {
         btnCalcular = findViewById(R.id.btnCalcular);
         btnLimpar = findViewById(R.id.btnLimpar);
 
-        btnCalcular.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String valorGasolina = edtGasolina.getText().toString();
-                String valorEtanol = edtEtanol.getText().toString();
+        btnCalcular.setOnClickListener(v -> {
+            String valorGasolina = edtGasolina.getText().toString().trim();
+            String valorEtanol = edtEtanol.getText().toString().trim();
 
-                if (!valorGasolina.isEmpty() && !valorEtanol.isEmpty()) {
-                    precoGasolina = Double.parseDouble(valorGasolina);
-                    precoEtanol = Double.parseDouble(valorEtanol);
-
-                    resultado = precoEtanol / precoGasolina;
+            if (!valorGasolina.isEmpty() && !valorEtanol.isEmpty()) {
+                try {
+                    double precoGasolina = Double.parseDouble(valorGasolina);
+                    double precoEtanol = Double.parseDouble(valorEtanol);
+                    double resultado = precoEtanol / precoGasolina;
 
                     if (resultado < 0.7) {
                         txtResultado.setText("Melhor usar: Etanol!");
                     } else {
                         txtResultado.setText("Melhor usar: Gasolina!");
                     }
-                } else {
-                    txtResultado.setText("Preencha ambos os campos!");
+                } catch (NumberFormatException e) {
+                    txtResultado.setText("Digite apenas números válidos.");
                 }
+            } else {
+                txtResultado.setText("Preencha ambos os campos!");
             }
         });
 
-        btnLimpar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtResultado.setText("Melhor abastecer com:");
-                edtGasolina.setText("");
-                edtEtanol.setText("");
-            }
+        btnLimpar.setOnClickListener(v -> {
+            txtResultado.setText("Melhor abastecer com:");
+            edtGasolina.setText("");
+            edtEtanol.setText("");
+            edtGasolina.requestFocus();
         });
     }
 }
